@@ -9,5 +9,5 @@ import { NxWelcome } from './nx-welcome';
   styleUrl: './app.scss',
 })
 export class App {
-  protected title = 'gestormatic-frontend';
+  protected title = 'Bienvenido a Gestormatic';
 }
