@@ -1,5 +1,5 @@
 {
-  "name": "demo",
+  "name": "process-mgmt-login",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/gestormatic-backend/process-mgmt-login/src",
   "tags": []

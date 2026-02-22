@@ -1,44 +1,51 @@
-name: CI
+name: CI/CD Build and Deploy to Easypanel
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
+    branches: [ develop ]
 
-permissions:
-  actions: read
-  contents: read
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  main:
+  build-and-push:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          filter: tree:0
-          fetch-depth: 0
+          fetch-depth: 0 # Necesario para que Nx detecte cambios
 
-      
-      # This enables task distribution via Nx Cloud
-      # Run this command as early as possible, before dependencies are installed
-      # Learn more at https://nx.dev/ci/reference/nx-cloud-cli#npx-nxcloud-startcirun
-      # Connect your workspace by running "nx connect" and uncomment this line to enable task distribution
-      # - run: npx nx start-ci-run --distribute-on="3 linux-medium-js" --stop-agents-after="build"
-
-      
-      # Cache node_modules
-      - uses: actions/setup-node@v4
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
         with:
-          node-version: 20
-          cache: 'npm'
-       
-      - run: npm ci
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
+      # --- FRONTEND: GESTORMATIC-FRONTEND ---
+      - name: Build & Push Frontend
+        run: |
+          # Detecta si hay cambios en la carpeta del frontend
+          if npx nx show projects --affected | grep -q "gestormatic-frontend"; then
+            IMAGE_ID=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend
+            docker build -t $IMAGE_ID:latest -f docker/gestormatic-frontend/Dockerfile .
+            docker push $IMAGE_ID:latest
+            curl -X POST "${{ secrets.EASYPANEL_WEBHOOK_FRONTEND }}"
+          fi
 
-      # Prepend any command with "nx record --" to record its logs to Nx Cloud
-      # - run: npx nx record -- echo Hello World
-      - run: npx nx run-many -t lint test build
-      # Nx Cloud recommends fixes for failures to help you get CI green faster. Learn more: https://nx.dev/ci/features/self-healing-ci
-      - run: npx nx fix-ci
-        if: always()
+      # --- BACKEND: GESTORMATIC-BACKEND ---
+      - name: Build & Push Login Service
+        run: |
+          # Detecta si hay cambios en la carpeta del servicio login del backend
+          if npx nx show projects --affected | grep -q "process-mgmt-login"; then
+            IMAGE_ID=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-login
+            docker build -t $IMAGE_ID:latest -f docker/gestormatic-backend/process-mgmt-login/Dockerfile .
+            docker push $IMAGE_ID:latest
+            curl -X POST "${{ secrets.EASYPANEL_WEBHOOK_BACKEND }}"
+          fi
