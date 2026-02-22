@@ -41,7 +41,7 @@ jobs:
       - name: Build & Push Frontend
         run: |
           # Detecta si hay cambios en la carpeta del frontend
-          if npx nx show projects --affected | grep -q "gestormatic-frontend"; then
+          if npx nx show projects --affected --base=origin/develop~1 --head=HEAD | grep -q "gestormatic-frontend"; then
             IMAGE_ID=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend
             docker build -t $IMAGE_ID:latest -f docker/gestormatic-frontend/Dockerfile .
             docker push $IMAGE_ID:latest
