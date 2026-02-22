@@ -40,21 +40,24 @@ jobs:
       # --- FRONTEND: GESTORMATIC-FRONTEND ---
       - name: Build & Push Frontend
         run: |
-          # Detecta si hay cambios en la carpeta del frontend
-          if npx nx show projects --affected --base=origin/develop~1 --head=HEAD | grep -q "gestormatic-frontend"; then
-            IMAGE_ID=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend
+          if npx nx show projects --affected | grep -q "gestormatic-frontend"; then
+            # Esta línea convierte el nombre del repositorio a minúsculas
+            IMAGE_ID=$(echo "ghcr.io/${{ github.repository }}-frontend" | tr '[:upper:]' '[:lower:]')
+
             docker build -t $IMAGE_ID:latest -f docker/gestormatic-frontend/Dockerfile .
             docker push $IMAGE_ID:latest
             curl -X POST "${{ secrets.EASYPANEL_WEBHOOK_FRONTEND }}"
           fi
 
-      # --- BACKEND: GESTORMATIC-BACKEND ---
+      # --- BACKEND: PROCESS-MGMT-LOGIN ---
       - name: Build & Push Login Service
         run: |
-          # Detecta si hay cambios en la carpeta del servicio login del backend
           if npx nx show projects --affected | grep -q "process-mgmt-login"; then
-            IMAGE_ID=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-login
+            # Aplicamos lo mismo para el backend
+            IMAGE_ID=$(echo "ghcr.io/${{ github.repository }}-login" | tr '[:upper:]' '[:lower:]')
+
             docker build -t $IMAGE_ID:latest -f docker/gestormatic-backend/process-mgmt-login/Dockerfile .
             docker push $IMAGE_ID:latest
             curl -X POST "${{ secrets.EASYPANEL_WEBHOOK_BACKEND }}"
           fi
+
