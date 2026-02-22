@@ -21,6 +21,15 @@ jobs:
         with:
           fetch-depth: 0 # Necesario para que Nx detecte cambios
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
       - name: Log in to GHCR
         uses: docker/login-action@v3
         with:
