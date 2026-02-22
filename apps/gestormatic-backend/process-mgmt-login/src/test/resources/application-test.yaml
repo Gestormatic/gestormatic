@@ -1,0 +1,15 @@
+app:
+  supabase:
+    url: https://example.supabase.co
+    jwks: https://example.supabase.co/auth/v1/.well-known/jwks.json
+    service-role-key: test
+  bootstrap:
+    enabled: false
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=PostgreSQL;CASE_INSENSITIVE_IDENTIFIERS=TRUE;DB_CLOSE_DELAY=-1
+  sql:
+    init:
+      mode: never
+      schema-locations: classpath:schema-test.sql

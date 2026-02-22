@@ -1,0 +1,23 @@
+spring:
+  config:
+    import: optional:file:.env[.properties]
+  application:
+    name: process-mgmt-login
+  sql:
+    init:
+      mode: never
+  datasource:
+    url: ${DB_URL:}
+    username: ${DB_USERNAME:}
+    password: ${DB_PASSWORD:}
+
+app:
+  supabase:
+    url: ${SUPABASE_URL:}
+    jwks: ${SUPABASE_JWKS_URL:}
+    service-role-key: ${SUPABASE_SERVICE_ROLE_KEY:}
+  bootstrap:
+    enabled: ${BOOTSTRAP_ENABLED:false}
+    uid: ${BOOTSTRAP_UID:}
+    tenant-id: ${BOOTSTRAP_TENANT_ID:}
+    roles: ${BOOTSTRAP_ROLES:}
