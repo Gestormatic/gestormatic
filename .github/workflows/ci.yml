@@ -52,7 +52,7 @@ jobs:
       # --- BACKEND: PROCESS-MGMT-LOGIN ---
       - name: Build & Push Login Service
         run: |
-          if npx nx show projects --affected | grep -q "process-mgmt-login"; then
+          if npx nx show projects --affected --base=origin/develop~1 --head=HEAD | grep -q "process-mgmt-login"; then
             # Aplicamos lo mismo para el backend
             IMAGE_ID=$(echo "ghcr.io/${{ github.repository }}-login" | tr '[:upper:]' '[:lower:]')
 
