@@ -4,7 +4,7 @@ WORKDIR /app
 # Copia todo el monorepo (contexto .)
 COPY . .
 
-Dar permisos de ejecución al wrapper
+# Dar permisos de ejecución al wrapper
 RUN chmod +x ./apps/gestormatic-backend/process-mgmt-login/mvnw
 
 # CORRECCIÓN 2: Ejecutar el build (Asegúrate de que mvnw esté en la raíz)
