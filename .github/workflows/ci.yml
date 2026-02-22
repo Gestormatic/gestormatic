@@ -40,7 +40,7 @@ jobs:
       # --- FRONTEND: GESTORMATIC-FRONTEND ---
       - name: Build & Push Frontend
         run: |
-          if npx nx show projects --affected | grep -q "gestormatic-frontend"; then
+          if npx nx show projects --affected --base=origin/develop~1 --head=HEAD | grep -q "gestormatic-frontend"; then
             # Esta línea convierte el nombre del repositorio a minúsculas
             IMAGE_ID=$(echo "ghcr.io/${{ github.repository }}-frontend" | tr '[:upper:]' '[:lower:]')
 
