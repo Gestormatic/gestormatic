@@ -20,6 +20,7 @@ import java.util.Map;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -93,5 +94,14 @@ class AuthMeIntegrationTest {
                 .andExpect(jsonPath("$.authUid").value(uid))
                 .andExpect(jsonPath("$.roles[0]").value("admin"))
                 .andExpect(jsonPath("$.roles[1]").value("gestor"));
+    }
+
+      @Test
+      void signinRequiresCredentialsBody() throws Exception {
+              mockMvc.perform(post("/auth/signin")
+                              .contentType("application/json")
+                              .content("{}"))
+                              .andExpect(status().isBadRequest())
+                              .andExpect(jsonPath("$.error").value("email and password are required"));
     }
 }
