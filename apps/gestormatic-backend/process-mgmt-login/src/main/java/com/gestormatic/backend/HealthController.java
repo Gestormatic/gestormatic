@@ -13,7 +13,7 @@ public class HealthController {
     public Map<String, String> checkStatus() {
         return Map.of(
             "status", "UP",
-            "message", "El servicio de login está funcionando correctamente",
+            "message", "Login service is running",
             "version", "1.0.0"
         );
     }

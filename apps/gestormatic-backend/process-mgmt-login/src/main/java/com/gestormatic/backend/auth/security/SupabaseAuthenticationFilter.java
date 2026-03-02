@@ -59,11 +59,12 @@ public class SupabaseAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
 
+            Map<String, Object> userMetadata = extractMap(decoded.getClaim("user_metadata"));
             List<String> roles = extractRoles(appMetadata.get("roles"));
             SupabasePrincipal principal = new SupabasePrincipal(
                     decoded.getSubject(),
                     decoded.getClaimAsString("email"),
-                    decoded.getClaimAsString("email"),
+                    extractString(userMetadata, "display_name"),
                     tenantId,
                     roles
             );
