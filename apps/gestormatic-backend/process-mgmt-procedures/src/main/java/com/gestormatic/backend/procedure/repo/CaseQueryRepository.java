@@ -31,8 +31,8 @@ public class CaseQueryRepository {
                 SELECT c.id, c.tenant_id, c.template_id, t.name AS template_name,
                        c.customer_id, c.assigned_to, c.status, c.notes,
                        c.created_by, c.created_at, c.updated_at
-                FROM procedure_cases c
-                JOIN procedure_templates t ON t.id = c.template_id
+                FROM procedures.procedure_cases c
+                JOIN procedures.procedure_templates t ON t.id = c.template_id
                 WHERE c.tenant_id = :tenantId
                 """);
 
