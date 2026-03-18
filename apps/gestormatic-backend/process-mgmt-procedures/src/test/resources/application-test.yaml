@@ -1,0 +1,13 @@
+spring:
+  config:
+    import: ""
+  sql:
+    init:
+      mode: always
+  datasource:
+    driver-class-name: org.postgresql.Driver
+
+app:
+  supabase:
+    url: http://localhost:54321
+    jwks: ""
