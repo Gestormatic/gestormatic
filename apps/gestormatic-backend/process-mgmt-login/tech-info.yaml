@@ -1,0 +1,41 @@
+apiVersion: technology-service/v1alpha1
+kind: Component
+metadata:
+  name: process-mgmt-login
+  project: gestormatic
+  annotations:
+    sonarqube.org/project-key:
+spec:
+  systems: []
+  product: gestormatic
+technologies:
+  - name: Java
+    version: '21'
+  - name: Spring Boot
+    version: '4.0.3'
+  - name: Spring Security
+    version: ''
+  - name: Spring Data JPA
+    version: ''
+  - name: Spring Data JDBC
+    version: ''
+  - name: Spring OAuth2 Resource Server
+    version: ''
+  - name: PostgreSQL
+    version: ''
+  - name: Supabase
+    version: ''
+  - name: Springdoc OpenAPI
+    version: '2.3.0'
+technicalDebt:
+  principlesAlignment:
+    simplicity:
+    disposability:
+    consistency:
+    resilience:
+    observability:
+    efficiency:
+    security:
+  testCoverage:
+    test-pyramid-alignment:
+  cleanCodeScore:
