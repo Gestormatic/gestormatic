@@ -44,3 +44,6 @@ Thumbs.db
 .angular
 
 .env
+
+### Maven local cache (CI/Docker artifacts) ###
+.m2/
