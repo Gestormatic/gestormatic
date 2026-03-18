@@ -1,3 +1,5 @@
+create schema if not exists procedures;
+
 create table if not exists procedure_templates (
     id          bigserial primary key,
     tenant_id   varchar(64)  not null,
