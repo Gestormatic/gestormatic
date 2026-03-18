@@ -4,6 +4,10 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+### Maven local cache and custom settings ###
+.m2/
+mvn-settings.xml
+
 ### STS ###
 .apt_generated
 .classpath
