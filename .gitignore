@@ -45,5 +45,6 @@ Thumbs.db
 
 .env
 
-### Maven local cache (CI/Docker artifacts) ###
+### Maven local cache and custom settings ###
 .m2/
+mvn-settings.xml
