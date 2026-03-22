@@ -1,21 +1,28 @@
 import { Component } from '@angular/core';
 import { ChangeDetectorRef, inject } from '@angular/core';
 import { ViewChild, ElementRef } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-signin',
-  imports: [],
+  imports: [ReactiveFormsModule],
   templateUrl: './signin.html',
   styleUrl: './signin.css',
 })
 export class Signin {
-  @ViewChild('videoPlayer') video!: ElementRef<HTMLVideoElement>;
+  private fb = inject(FormBuilder);
 
   currentSlide = 0;
   intervalId: any;
+  loading = false;
+  errorMessage = '';
 
-  textVisible = true;
-  isAnimating = true;
+  signinForm = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required, Validators.minLength(6)]],
+  });
+
+  state: 'idle' | 'loading' | 'success' = 'idle';
 
   slides = [
     {
@@ -37,7 +44,7 @@ export class Signin {
 
   private cdr = inject(ChangeDetectorRef);
 
- ngOnInit() {
+  ngOnInit() {
     this.startAutoSlide();
   }
 
@@ -58,5 +65,36 @@ export class Signin {
 
   goToSlide(index: number) {
     this.currentSlide = index;
+  }
+
+  onSubmit() {
+    if (this.signinForm.invalid) {
+      this.signinForm.markAllAsTouched();
+      return;
+    }
+
+    this.loading = true;
+    this.errorMessage = '';
+
+    const { email, password } = this.signinForm.value;
+
+    if (this.signinForm.invalid) {
+      this.signinForm.markAllAsTouched();
+      return;
+    }
+
+    this.state = 'loading';
+
+    // Simulación API
+    setTimeout(() => {
+      // Simula éxito
+      this.state = 'success';
+
+      // Espera animación antes de navegar
+      setTimeout(() => {
+        // this.router.navigate(['/dashboard']);
+        console.log('Login correcto');
+      }, 800);
+    }, 1500);
   }
 }

@@ -7,11 +7,16 @@
         <p class="text-slate-500 mt-2">Ingresa para gestionar tus expedientes y trámites pendientes.</p>
       </div>
 
-      <form class="space-y-6">
+      <form [formGroup]="signinForm" (ngSubmit)="onSubmit()" class="space-y-6">
         <div>
           <label class="block text-sm font-semibold text-slate-700">Email</label>
-          <input type="email" placeholder="tu@ejemplo.com"
+          <input type="email" formControlName="email" placeholder="tu@ejemplo.com"
             class="w-full mt-2 px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
+          @if (signinForm.controls.email.dirty && signinForm.controls.email.errors?.['email']) {
+          <p class="text-red-500 text-sm mt-1">
+            Email inválido
+          </p>
+          }
         </div>
 
         <div>
@@ -19,9 +24,21 @@
             <label class="block text-sm font-semibold text-slate-700">Contraseña</label>
             <a href="#" class="text-xs text-indigo-600 hover:underline">¿La olvidaste?</a>
           </div>
-          <input type="password" placeholder="••••••••"
+          <input type="password" formControlName="password" placeholder="••••••••"
             class="w-full mt-2 px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
+          @if (signinForm.controls.password.dirty && signinForm.controls.password.errors?.['minlength']) {
+          <p class="text-red-500 text-sm mt-1">
+            Mínimo 6 caracteres
+          </p>
+          }
         </div>
+
+        <!-- Error global -->
+        @if (errorMessage) {
+        <div class="text-red-500 text-sm text-center">
+          {{ errorMessage }}
+        </div>
+        }
 
         <div class="flex items-center">
           <input type="checkbox" id="remember"
@@ -30,9 +47,54 @@
         </div>
 
         <button
-          class="w-full py-3.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-200 transition-all transform active:scale-[0.98]">
-          Acceder al Gestor
+        type="submit"
+        [disabled]="signinForm.invalid || state === 'loading'"
+        class="relative w-full py-3.5 px-4
+         text-white font-semibold rounded-xl
+         transition-all duration-300
+
+         bg-indigo-600 hover:bg-indigo-700
+         active:scale-[0.98]
+
+         hover:bg-indigo-700
+         active:scale-[0.98]
+
+         disabled:bg-indigo-300
+         disabled:text-white/70
+         disabled:shadow-none
+         disabled:cursor-not-allowed
+         disabled:transform-none"
+
+         [class.bg-green-600]="state === 'success'">
+
+          <!-- TEXTO -->
+          <span class="transition-all duration-300" [class.opacity-0]="state !== 'idle'"
+            [class.translate-y-2]="state !== 'idle'">
+            Acceder al Gestor
+          </span>
+
+          <!-- LOADING -->
+          @if (state === 'loading') {
+          <span class="absolute inset-0 flex items-center justify-center">
+            <span class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+          </span>
+          }
+
+          <!-- SUCCESS -->
+          @if (state === 'success') {
+          <span class="absolute inset-0 flex items-center justify-center">
+
+            <!-- Check animado -->
+            <svg class="w-6 h-6 text-white animate-[scaleIn_0.3s_ease-out]" fill="none" stroke="currentColor"
+              stroke-width="3" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+
+          </span>
+          }
+
         </button>
+
       </form>
 
       <p class="mt-8 text-center text-sm text-slate-500">
