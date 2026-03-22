@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { ChangeDetectorRef, inject } from '@angular/core';
-import { ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Auth } from '../../../services/auth';
 
 @Component({
   selector: 'app-signin',
@@ -11,6 +12,8 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 })
 export class Signin {
   private fb = inject(FormBuilder);
+  private authService = inject(Auth);
+  private route = inject(Router);
 
   currentSlide = 0;
   intervalId: any;
@@ -85,16 +88,18 @@ export class Signin {
 
     this.state = 'loading';
 
-    // Simulación API
-    setTimeout(() => {
-      // Simula éxito
-      this.state = 'success';
-
-      // Espera animación antes de navegar
-      setTimeout(() => {
-        // this.router.navigate(['/dashboard']);
-        console.log('Login correcto');
-      }, 800);
-    }, 1500);
+    this.authService
+      .signIn(email!, password!)
+      .then(() => {
+        this.state = 'success';
+        setTimeout(() => {
+          console.log('Login correcto');
+          this.route.navigate(['main/home']);
+        }, 800);
+      })
+      .catch((error) => {
+        this.state = 'idle';
+        this.errorMessage = error.message || 'Error desconocido';
+      });
   }
 }

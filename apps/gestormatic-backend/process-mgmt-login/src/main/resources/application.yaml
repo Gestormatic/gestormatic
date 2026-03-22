@@ -7,16 +7,15 @@ spring:
     init:
       mode: never
   datasource:
-    url: "jdbc:postgresql://aws-1-eu-west-1.pooler.supabase.com:5432/postgres?sslmode=require"
-    username: "postgres.bxlrxmqqzeafsvtyxmjm"
-    password: "?Ge5t0_2026&"
-    driver-class-name: org.postgresql.Driver
+    url: ${VITE_DB_URL:}
+    username: ${VITE_DB_USERNAME:}
+    password: ${VITE_DB_PASSWORD:}
 
 app:
   supabase:
-    url: "https://bxlrxmqqzeafsvtyxmjm.supabase.co"
-    jwks: "https://bxlrxmqqzeafsvtyxmjm.supabase.co/auth/v1/.well-known/jwks.json"
-    service-role-key: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ4bHJ4bXFxemVhZnN2dHl4bWptIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTE2MjA3MywiZXhwIjoyMDg2NzM4MDczfQ.zaxK2vJtYnk4U_yw6BLTKzV3KWNMr5Fm_XvqJxBGOCw"
+    url: ${VITE_SUPABASE_URL:}
+    jwks: ${VITE_SUPABASE_JWKS_URL:}
+    service-role-key: ${VITE_SUPABASE_SERVICE_ROLE_KEY:}
   bootstrap:
     enabled: "false"
     uid: "05c5be39-ade0-4565-b606-62ab1caffaa4"
