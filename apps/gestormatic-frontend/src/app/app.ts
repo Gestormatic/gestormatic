@@ -4,7 +4,7 @@ import { Layout } from './core/components/layout/layout';
 import { Signin } from './core/components/auth/signin/signin';
 
 @Component({
-  imports: [RouterModule, Signin],
+  imports: [RouterModule, Signin, Layout],
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.scss',
