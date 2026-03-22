@@ -51,6 +51,22 @@ public class AdminUserService {
                 .build();
     }
 
+    public void updatePassword(String uid, String newPassword) {
+        if (newPassword == null || newPassword.isBlank()) {
+            throw new IllegalArgumentException("password is required");
+        }
+
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("password", newPassword);
+
+        restClient.put()
+                .uri("/auth/v1/admin/users/{uid}", uid)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(payload)
+                .retrieve()
+                .toBodilessEntity();
+    }
+
     @Transactional
     public SetClaimsResponse setClaims(SetClaimsRequest request) {
         String uid = request.getUid();

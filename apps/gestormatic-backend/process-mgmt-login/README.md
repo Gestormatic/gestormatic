@@ -84,6 +84,7 @@ Bootstrap will:
 | Method | Path | Description |
 |--------|------|-------------|
 | `POST` | `/admin/users/claims` | Set `tenant_id` + roles and sync Supabase claims |
+| `PUT` | `/admin/users/{uid}/password` | Change password for a user |
 | `PUT` | `/admin/users/{uid}/roles` | Assign roles and sync Supabase claims |
 | `GET` | `/admin/roles` | List active roles for tenant |
 | `POST` | `/admin/roles` | Create a role |
@@ -137,6 +138,29 @@ Creates a new user in Supabase and the local `users` table. All fields are requi
   "roles": ["gestor"]
 }
 ```
+
+### PUT /admin/users/{uid}/password
+
+Changes the Supabase password for the given user. Uses the service role key server-side — the target user does not need to be logged in.
+
+**Request:**
+```json
+{
+  "password": "nueva_contraseña"
+}
+```
+
+**Response `204 No Content`** — password updated successfully.
+
+**Error `400 Bad Request`:**
+```json
+{
+  "error": "invalid_request",
+  "message": "password is required"
+}
+```
+
+---
 
 ### PUT /admin/users/{uid}/roles
 

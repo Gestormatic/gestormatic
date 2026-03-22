@@ -3,9 +3,14 @@ package com.gestormatic.backend.admin.controller;
 
 import com.gestormatic.backend.admin.dto.SetClaimsRequest;
 import com.gestormatic.backend.admin.dto.SetClaimsResponse;
+import com.gestormatic.backend.admin.dto.UpdateUserPasswordRequest;
 import com.gestormatic.backend.admin.dto.UpdateUserRolesRequest;
 import com.gestormatic.backend.admin.service.AdminUserService;
 import com.gestormatic.backend.auth.security.SupabasePrincipal;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Tag(name = "Admin - Users", description = "User management endpoints (admin role required)")
 @RestController
 @RequestMapping("/admin/users")
 public class AdminUserController {
@@ -57,6 +63,29 @@ public class AdminUserController {
         try {
             SetClaimsResponse response = adminUserService.setClaims(request);
             return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("{\"error\":\"invalid_request\",\"message\":\"" + ex.getMessage() + "\"}");
+        }
+    }
+
+    @Operation(summary = "Update user password", description = "Changes the Supabase password for the given user UID. Requires admin role.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "204", description = "Password updated successfully"),
+        @ApiResponse(responseCode = "400", description = "Password is missing or blank"),
+        @ApiResponse(responseCode = "403", description = "Admin role required")
+    })
+    @PutMapping("/{uid}/password")
+    public ResponseEntity<?> updatePassword(@AuthenticationPrincipal SupabasePrincipal principal,
+                                            @PathVariable("uid") String uid,
+                                            @RequestBody UpdateUserPasswordRequest request) {
+        if (principal == null || principal.roles() == null || !principal.roles().contains("admin")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("{\"error\":\"forbidden\",\"message\":\"Admin role required\"}");
+        }
+        try {
+            adminUserService.updatePassword(uid, request.getPassword());
+            return ResponseEntity.noContent().build();
         } catch (IllegalArgumentException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("{\"error\":\"invalid_request\",\"message\":\"" + ex.getMessage() + "\"}");
