@@ -18,6 +18,7 @@ export class Signup implements OnInit {
   intervalId: any;
   loading = false;
   errorMessage = '';
+  showPassword = false;
 
   signupForm = this.fb.group({
     displayName: ['', [Validators.required]],
@@ -69,6 +70,10 @@ export class Signup implements OnInit {
 
   goToSlide(index: number) {
     this.currentSlide = index;
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
   }
 
   onSubmit() {

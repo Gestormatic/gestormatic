@@ -19,6 +19,7 @@ export class Signin {
   intervalId: any;
   loading = false;
   errorMessage = '';
+  showPassword = false;
 
   signinForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -68,6 +69,10 @@ export class Signin {
 
   goToSlide(index: number) {
     this.currentSlide = index;
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
   }
 
   onSubmit() {
