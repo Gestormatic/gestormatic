@@ -11,6 +11,11 @@ spring:
     username: ${VITE_DB_USERNAME:}
     password: ${VITE_DB_PASSWORD:}
 
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
 app:
   supabase:
     url: ${VITE_SUPABASE_URL:}
