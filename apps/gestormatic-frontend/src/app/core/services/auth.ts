@@ -22,9 +22,34 @@ export class Auth {
         'apikey': environment.SUPABASE_SERVICE_ROLE_KEY,
       };
 
-     this.http.post(`${environment.SUPABASE_URL}/auth/v1/token?grant_type=password`, { email, password }, { headers }).subscribe({
+      this.http.post(`${environment.SUPABASE_URL}/auth/v1/token?grant_type=password`, { email, password }, { headers }).subscribe({
         next: (response) => {
           console.log('Respuesta del servidor:', response);
+          resolve();
+        },
+        error: (error) => {
+          reject(error);
+        }
+      });
+    });
+  }
+
+  signUp(email: string, password: string, displayName: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      console.log('import.meta.env:', import.meta.env);
+
+      const environment = {
+        DEV_HOST: import.meta.env['VITE_DEV_HOST'] || 'localhost',
+      };
+
+      this.http.post(`${environment.DEV_HOST}/auth/signup`, {
+        email,
+        password,
+        display_name: displayName,
+        tenant_id: 'default'
+      }).subscribe({
+        next: (response) => {
+          console.log('Respuesta del servidor (signup):', response);
           resolve();
         },
         error: (error) => {

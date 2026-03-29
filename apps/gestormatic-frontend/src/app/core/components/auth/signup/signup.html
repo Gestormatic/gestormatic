@@ -1,35 +1,37 @@
 <div class="flex h-screen w-full font-sans">
   <!-- Lado Izquierdo: Formulario -->
-  <div class="flex flex-col justify-center w-full md:w-1/2 px-8 md:px-24 bg-white">
-    <div class="max-w-md w-full mx-auto">
+  <div class="flex flex-col justify-center w-full md:w-1/2 px-8 md:px-24 bg-white overflow-y-auto">
+    <div class="max-w-md w-full mx-auto my-auto py-8">
       <div class="mb-8">
-        <h2 class="text-4xl font-extrabold text-slate-900 tracking-tight">¡Hola de nuevo!</h2>
-        <p class="text-slate-500 mt-2">Ingresa para gestionar tus expedientes y trámites pendientes.</p>
+        <h2 class="text-4xl font-extrabold text-slate-900 tracking-tight">Crea tu cuenta</h2>
+        <p class="text-slate-500 mt-2">Regístrate para comenzar a gestionar tus expedientes y trámites.</p>
       </div>
 
-      <form [formGroup]="signinForm" (ngSubmit)="onSubmit()" class="space-y-6">
+      <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="space-y-6">
         <div>
-          <label class="block text-sm font-semibold text-slate-700">Email</label>
-          <input type="email" formControlName="email" placeholder="tu@ejemplo.com"
+          <label class="block text-sm font-semibold text-slate-700">Nombre completo</label>
+          <input type="text" formControlName="displayName" placeholder="Ej. Juan Pérez"
             class="w-full mt-2 px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
-          @if (signinForm.controls.email.dirty && signinForm.controls.email.errors?.['email']) {
-          <p class="text-red-500 text-sm mt-1">
-            Email inválido
-          </p>
+          @if (signupForm.controls.displayName.dirty && signupForm.controls.displayName.errors?.['required']) {
+          <p class="text-red-500 text-sm mt-1">El nombre es requerido</p>
           }
         </div>
 
         <div>
-          <div class="flex justify-between">
-            <label class="block text-sm font-semibold text-slate-700">Contraseña</label>
-            <a href="#" class="text-xs text-indigo-600 hover:underline">¿La olvidaste?</a>
-          </div>
+          <label class="block text-sm font-semibold text-slate-700">Email</label>
+          <input type="email" formControlName="email" placeholder="tu@ejemplo.com"
+            class="w-full mt-2 px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
+          @if (signupForm.controls.email.dirty && signupForm.controls.email.errors?.['email']) {
+          <p class="text-red-500 text-sm mt-1">Email inválido</p>
+          }
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-slate-700">Contraseña</label>
           <input type="password" formControlName="password" placeholder="••••••••"
             class="w-full mt-2 px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
-          @if (signinForm.controls.password.dirty && signinForm.controls.password.errors?.['minlength']) {
-          <p class="text-red-500 text-sm mt-1">
-            Mínimo 6 caracteres
-          </p>
+          @if (signupForm.controls.password.dirty && signupForm.controls.password.errors?.['minlength']) {
+          <p class="text-red-500 text-sm mt-1">Mínimo 6 caracteres</p>
           }
         </div>
 
@@ -40,16 +42,7 @@
         </div>
         }
 
-        <div class="flex items-center">
-          <input type="checkbox" id="remember"
-            class="h-4 w-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500">
-          <label for="remember" class="ml-2 text-sm text-slate-600">Mantener sesión iniciada</label>
-        </div>
-
-        <button
-        type="submit"
-        [disabled]="signinForm.invalid || state === 'loading'"
-        class="relative w-full py-3.5 px-4
+        <button type="submit" [disabled]="signupForm.invalid || state === 'loading'" class="relative w-full py-3.5 px-4
          text-white font-semibold rounded-xl
          transition-all duration-300
 
@@ -63,14 +56,12 @@
          disabled:text-white/70
          disabled:shadow-none
          disabled:cursor-not-allowed
-         disabled:transform-none"
-
-         [class.bg-green-600]="state === 'success'">
+         disabled:transform-none" [class.bg-green-600]="state === 'success'">
 
           <!-- TEXTO -->
           <span class="transition-all duration-300" [class.opacity-0]="state !== 'idle'"
             [class.translate-y-2]="state !== 'idle'">
-            Acceder al Gestor
+            Registrarse
           </span>
 
           <!-- LOADING -->
@@ -83,13 +74,11 @@
           <!-- SUCCESS -->
           @if (state === 'success') {
           <span class="absolute inset-0 flex items-center justify-center">
-
             <!-- Check animado -->
             <svg class="w-6 h-6 text-white animate-[scaleIn_0.3s_ease-out]" fill="none" stroke="currentColor"
               stroke-width="3" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
             </svg>
-
           </span>
           }
 
@@ -98,8 +87,8 @@
       </form>
 
       <p class="mt-8 text-center text-sm text-slate-500">
-        ¿Aún no gestionas con nosotros?
-        <a href="/auth/signup" class="font-bold text-indigo-600 hover:underline">Solicita acceso aquí</a>
+        ¿Ya tienes una cuenta?
+        <a href="/auth/signin" class="font-bold text-indigo-600 hover:underline">Inicia sesión</a>
       </p>
     </div>
   </div>
@@ -118,20 +107,10 @@
       <div class="absolute inset-0 transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)]"
         [class.opacity-100]="i === currentSlide" [class.opacity-0]="i !== currentSlide">
 
-        <!-- Video -->
-        <!-- <div class="flex items-start justify-center h-full overflow-hidden">
-          <video autoplay loop muted playsinline preload="auto"
-            class="w-[520px] transition-transform duration-[6000ms] ease-linear">
-            <source [src]="slide.video" type="video/webm">
-          </video>
-        </div> -->
-
         <div class="flex items-start justify-center h-full overflow-hidden mt-16">
           <img [src]="slide.image" class="w-[400px] transition-transform duration-[6000ms] ease-linear"
             [class.scale-105]="i === currentSlide" alt="Gradient Overlay">
         </div>
-
-
 
         <!-- Texto -->
         <div class="absolute inset-0 flex flex-col justify-end items-center text-white p-12 text-center pb-28">

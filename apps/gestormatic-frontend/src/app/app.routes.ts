@@ -13,6 +13,11 @@ export const appRoutes: Route[] = [
         path: 'signin',
         loadComponent: () =>
           import('./core/components/auth/signin/signin').then((m) => m.Signin),
+      },
+      {
+        path: 'signup',
+        loadComponent: () =>
+          import('./core/components/auth/signup/signup').then((m) => m.Signup),
       }
     ]
   },
