@@ -42,7 +42,7 @@ export class Auth {
         DEV_HOST: import.meta.env['VITE_DEV_HOST'] || 'localhost',
       };
 
-      this.http.post(`${environment.DEV_HOST}/auth/signup`, {
+      this.http.post(`${environment.DEV_HOST}/api/auth/signup`, {
         email,
         password,
         display_name: displayName,

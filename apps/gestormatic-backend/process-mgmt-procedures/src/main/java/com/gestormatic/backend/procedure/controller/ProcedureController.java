@@ -34,7 +34,7 @@ import java.security.Principal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/procedures")
+@RequestMapping("/procedures")
 @Tag(name = "Procedure Templates", description = "Manage procedure templates, their steps, required documents and members")
 public class ProcedureController {
 

@@ -27,7 +27,7 @@ import java.security.Principal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/cases")
+@RequestMapping("/cases")
 @Tag(name = "Procedure Cases", description = "Manage concrete procedure case instances opened from active templates")
 public class CaseController {
 
