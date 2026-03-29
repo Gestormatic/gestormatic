@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { ConfigService } from './config.service';
 
 @Injectable({
   providedIn: 'root',
@@ -7,15 +8,11 @@ import { HttpClient } from '@angular/common/http';
 export class Auth {
 
   private http = inject(HttpClient);
+  private configService = inject(ConfigService);
 
   signIn(email: string, password: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      console.log('import.meta.env:', import.meta.env);
-
-      const environment = {
-        SUPABASE_URL: import.meta.env['VITE_SUPABASE_URL'] || 'http://localhost:8000',
-        SUPABASE_SERVICE_ROLE_KEY: import.meta.env['VITE_SUPABASE_SERVICE_ROLE_KEY'] || 'service-role-key',
-      };
+      const environment = this.configService.config;
 
       const headers = {
         'Content-Type': 'application/json',
@@ -36,11 +33,7 @@ export class Auth {
 
   signUp(email: string, password: string, displayName: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      console.log('import.meta.env:', import.meta.env);
-
-      const environment = {
-        DEV_HOST: import.meta.env['VITE_DEV_HOST'] || 'localhost',
-      };
+      const environment = this.configService.config;
 
       this.http.post(`${environment.DEV_HOST}/api/auth/signup`, {
         email,

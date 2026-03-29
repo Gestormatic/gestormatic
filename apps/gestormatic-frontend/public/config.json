@@ -1,0 +1,5 @@
+{
+  "SUPABASE_URL": "https://bxlrxmqqzeafsvtyxmjm.supabase.co",
+  "SUPABASE_SERVICE_ROLE_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ4bHJ4bXFxemVhZnN2dHl4bWptIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTE2MjA3MywiZXhwIjoyMDg2NzM4MDczfQ.zaxK2vJtYnk4U_yw6BLTKzV3KWNMr5Fm_XvqJxBGOCw",
+  "DEV_HOST": "https://nodeapps-gestormatic-backend.cdthhd.easypanel.host"
+}
