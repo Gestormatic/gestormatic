@@ -92,8 +92,8 @@ jobs:
           BRANCH_LINK="<https://github.com/${{ github.repository }}/tree/${{ github.ref }}|${COMMIT_BRANCH}>"
 
           if [ -z "$AFFECTED" ]; then
-            MESSAGE="🚀 Deploy job completed. No projects were affected.\n*Commit:* $COMMIT_LINK - $CLEAN_MSG\n*Author:* $AUTHOR_LINK\n*Branch:* $BRANCH_LINK"
-          else
-            MESSAGE="🚀 Deploy job completed. Affected projects: $AFFECTED\n*Commit:* $COMMIT_LINK - $CLEAN_MSG\n*Author:* $AUTHOR_LINK\n*Branch:* $BRANCH_LINK"
+            AFFECTED="None (No projects affected)"
           fi
+          
+          MESSAGE="🚀 *Deploy Job Status*\n*Affected Projects:* $AFFECTED\n*Commit:* $COMMIT_LINK - $CLEAN_MSG\n*Author:* $AUTHOR_LINK\n*Branch:* $BRANCH_LINK"
           curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"$MESSAGE\"}" ${{ secrets.SLACK_WEBHOOK_NOTIFICATIONS }}
