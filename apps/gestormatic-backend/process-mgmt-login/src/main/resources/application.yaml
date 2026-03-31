@@ -7,9 +7,9 @@ spring:
     init:
       mode: never
   datasource:
-    url: ${VITE_DB_URL:}
-    username: ${VITE_DB_USERNAME:}
-    password: ${VITE_DB_PASSWORD:}
+    url: ${DB_URL:}
+    username: ${DB_USERNAME:}
+    password: ${DB_PASSWORD:}
 
 server:
   port: 8080
@@ -18,9 +18,9 @@ server:
 
 app:
   supabase:
-    url: ${VITE_SUPABASE_URL:}
-    jwks: ${VITE_SUPABASE_JWKS_URL:}
-    service-role-key: ${VITE_SUPABASE_SERVICE_ROLE_KEY:}
+    url: ${SUPABASE_URL:}
+    jwks: ${SUPABASE_JWKS:}
+    service-role-key: ${SUPABASE_SERVICE_ROLE_KEY:}
   bootstrap:
     enabled: "false"
     uid: "05c5be39-ade0-4565-b606-62ab1caffaa4"
