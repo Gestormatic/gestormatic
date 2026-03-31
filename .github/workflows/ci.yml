@@ -72,3 +72,15 @@ jobs:
             docker push $IMAGE_ID:latest
             curl -X POST "${{ secrets.EASYPANEL_WEBHOOK_PROCEDURES }}"
           fi
+
+      # --- NOTIFICATION: SLACK ---
+      - name: Notify on Slack
+        if: always()
+        run: |
+          AFFECTED=$(npx nx show projects --affected --base=origin/develop~1 --head=HEAD | paste -sd, -)
+          if [ -z "$AFFECTED" ]; then
+            MESSAGE="🚀 Deploy job completed. No projects were affected."
+          else
+            MESSAGE="🚀 Deploy job completed. Affected projects: $AFFECTED"
+          fi
+          curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"$MESSAGE\"}" ${{ secrets.SLACK_WEBHOOK_NOTIFICATIONS }}
