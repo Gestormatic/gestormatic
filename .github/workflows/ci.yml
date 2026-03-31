@@ -2,7 +2,7 @@ name: CI/CD Build and Deploy to Easypanel
 
 on:
   push:
-    branches: [ develop ]
+    branches: [develop]
 
 env:
   REGISTRY: ghcr.io
@@ -76,11 +76,24 @@ jobs:
       # --- NOTIFICATION: SLACK ---
       - name: Notify on Slack
         if: always()
+        env:
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+          COMMIT_AUTHOR: ${{ github.event.head_commit.author.name }}
+          COMMIT_BRANCH: ${{ github.ref }}
         run: |
           AFFECTED=$(npx nx show projects --affected --base=origin/develop~1 --head=HEAD | paste -sd, -)
+          COMMIT_SHA="${{ github.sha }}"
+          SHORT_SHA="${COMMIT_SHA:0:7}"
+
+          # Clean commit message for JSON and get only first line
+          CLEAN_MSG=$(echo "$COMMIT_MESSAGE" | head -n 1 | sed 's/"/\\"/g' | tr -d '\n\r')
+          COMMIT_LINK="<https://github.com/${{ github.repository }}/commit/$COMMIT_SHA|$SHORT_SHA>"
+          AUTHOR_LINK="<https://github.com/${{ github.actor }}|${COMMIT_AUTHOR}>"
+          BRANCH_LINK="<https://github.com/${{ github.repository }}/tree/${{ github.ref }}|${COMMIT_BRANCH}>"
+
           if [ -z "$AFFECTED" ]; then
-            MESSAGE="🚀 Deploy job completed. No projects were affected."
+            MESSAGE="🚀 Deploy job completed. No projects were affected.\n*Commit:* $COMMIT_LINK - $CLEAN_MSG\n*Author:* $AUTHOR_LINK\n*Branch:* $BRANCH_LINK"
           else
-            MESSAGE="🚀 Deploy job completed. Affected projects: $AFFECTED"
+            MESSAGE="🚀 Deploy job completed. Affected projects: $AFFECTED\n*Commit:* $COMMIT_LINK - $CLEAN_MSG\n*Author:* $AUTHOR_LINK\n*Branch:* $BRANCH_LINK"
           fi
           curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"$MESSAGE\"}" ${{ secrets.SLACK_WEBHOOK_NOTIFICATIONS }}
