@@ -1,0 +1,6 @@
+{
+  "name": "process-mgmt-procedures",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/gestormatic-backend/process-mgmt-procedures/src",
+  "tags": []
+}
