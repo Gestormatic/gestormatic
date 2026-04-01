@@ -123,7 +123,7 @@ jobs:
   notify:
     needs: [detect-changes, build]
     runs-on: ubuntu-latest
-    if: always()
+    if: needs.detect-changes.outputs.has_projects == 'true'
 
     steps:
       - name: Send Slack notification
