@@ -72,7 +72,8 @@ jobs:
 
       - name: Set image name
         run: |
-          echo "IMAGE=ghcr.io/${{ github.repository_owner }}/${{ matrix.project }}" >> $GITHUB_ENV
+          IMAGE=$(echo "ghcr.io/${{ github.repository_owner }}/${{ matrix.project }}" | tr '[:upper:]' '[:lower:]')
+          echo "IMAGE=$IMAGE" >> $GITHUB_ENV
 
       - name: Set tags
         run: |
