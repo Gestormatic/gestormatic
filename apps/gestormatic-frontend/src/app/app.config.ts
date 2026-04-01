@@ -3,7 +3,7 @@ import {
   APP_INITIALIZER,
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withHashLocation } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { appRoutes } from './app.routes';
 import { ConfigService, initializeApp } from './core/services/config.service';
@@ -11,7 +11,7 @@ import { ConfigService, initializeApp } from './core/services/config.service';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideRouter(appRoutes),
+    provideRouter(appRoutes, withHashLocation()),
     provideHttpClient(),
     {
       provide: APP_INITIALIZER,
