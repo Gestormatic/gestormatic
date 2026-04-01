@@ -95,7 +95,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.REPO_TOKEN }}
+          password: ${{ secrets.GHCR_TOKEN }}
 
       - name: Build & Push
         run: |
