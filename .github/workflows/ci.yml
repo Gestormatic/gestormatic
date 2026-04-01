@@ -19,7 +19,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Necesario para que Nx detecte cambios
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -30,6 +30,15 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
+      - name: Detect affected projects
+        id: affected
+        run: |
+          echo "Calculating affected projects..."
+          npx nx show projects --affected --base=${{ github.event.before }} --head=${{ github.sha }} > affected.txt
+
+          echo "Affected projects:"
+          cat affected.txt
+
       - name: Log in to GHCR
         uses: docker/login-action@v3
         with:
@@ -37,43 +46,52 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # --- FRONTEND: GESTORMATIC-FRONTEND ---
+      # --- FRONTEND ---
       - name: Build & Push Frontend
         run: |
-          if npx nx show projects --affected --base=origin/develop~1 --head=HEAD | grep -q "gestormatic-frontend"; then
-            # Esta línea convierte el nombre del repositorio a minúsculas
+          if grep -q "gestormatic-frontend" affected.txt; then
+            echo "Building frontend..."
+
             IMAGE_ID=$(echo "ghcr.io/${{ github.repository }}-frontend" | tr '[:upper:]' '[:lower:]')
 
             docker build -t $IMAGE_ID:latest -f docker/gestormatic-frontend/Dockerfile .
             docker push $IMAGE_ID:latest
             curl -X POST "${{ secrets.EASYPANEL_WEBHOOK_FRONTEND }}"
+          else
+            echo "Frontend not affected, skipping..."
           fi
 
-      # --- BACKEND: PROCESS-MGMT-LOGIN ---
+      # --- BACKEND: LOGIN ---
       - name: Build & Push Login Service
         run: |
-          if npx nx show projects --affected --base=origin/develop~1 --head=HEAD | grep -q "process-mgmt-login"; then
-            # Aplicamos lo mismo para el backend
+          if grep -q "process-mgmt-login" affected.txt; then
+            echo "Building login service..."
+
             IMAGE_ID=$(echo "ghcr.io/${{ github.repository }}-login" | tr '[:upper:]' '[:lower:]')
 
             docker build -t $IMAGE_ID:latest -f docker/gestormatic-backend/process-mgmt-login/Dockerfile .
             docker push $IMAGE_ID:latest
             curl -X POST "${{ secrets.EASYPANEL_WEBHOOK_BACKEND }}"
+          else
+            echo "Login service not affected, skipping..."
           fi
 
-      # --- BACKEND: PROCESS-MGMT-PROCEDURES ---
+      # --- BACKEND: PROCEDURES ---
       - name: Build & Push Procedures Service
         run: |
-          if npx nx show projects --affected --base=origin/develop~1 --head=HEAD | grep -q "process-mgmt-procedures"; then
-            # Aplicamos lo mismo para el backend (Procedures)
+          if grep -q "process-mgmt-procedures" affected.txt; then
+            echo "Building procedures service..."
+
             IMAGE_ID=$(echo "ghcr.io/${{ github.repository }}-procedures" | tr '[:upper:]' '[:lower:]')
 
             docker build -t $IMAGE_ID:latest -f docker/gestormatic-backend/process-mgmt-procedures/Dockerfile .
             docker push $IMAGE_ID:latest
             curl -X POST "${{ secrets.EASYPANEL_WEBHOOK_PROCEDURES }}"
+          else
+            echo "Procedures service not affected, skipping..."
           fi
 
-      # --- NOTIFICATION: SLACK ---
+      # --- SLACK NOTIFICATION ---
       - name: Notify on Slack
         if: always()
         env:
@@ -81,11 +99,10 @@ jobs:
           COMMIT_AUTHOR: ${{ github.event.head_commit.author.name }}
           COMMIT_BRANCH: ${{ github.ref }}
         run: |
-          AFFECTED=$(npx nx show projects --affected --base=origin/develop~1 --head=HEAD | paste -sd, -)
+          AFFECTED=$(paste -sd, affected.txt)
           COMMIT_SHA="${{ github.sha }}"
           SHORT_SHA="${COMMIT_SHA:0:7}"
 
-          # Clean commit message for JSON and get only first line
           CLEAN_MSG=$(echo "$COMMIT_MESSAGE" | head -n 1 | sed 's/"/\\"/g' | tr -d '\n\r')
           COMMIT_LINK="<https://github.com/${{ github.repository }}/commit/$COMMIT_SHA|$SHORT_SHA>"
           AUTHOR_LINK="<https://github.com/${{ github.actor }}|${COMMIT_AUTHOR}>"
@@ -94,6 +111,9 @@ jobs:
           if [ -z "$AFFECTED" ]; then
             AFFECTED="None (No projects affected)"
           fi
-          
+
           MESSAGE="🚀 *Deploy Job Status*\n*Affected Projects:* $AFFECTED\n*Commit:* $COMMIT_LINK - $CLEAN_MSG\n*Author:* $AUTHOR_LINK\n*Branch:* $BRANCH_LINK"
-          curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"$MESSAGE\"}" ${{ secrets.SLACK_WEBHOOK_NOTIFICATIONS }}
+
+          curl -X POST -H 'Content-type: application/json' \
+          --data "{\"text\":\"$MESSAGE\"}" \
+          ${{ secrets.SLACK_WEBHOOK_NOTIFICATIONS }}
