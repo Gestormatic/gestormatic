@@ -103,17 +103,17 @@ jobs:
           IMAGE_ID=$(echo "ghcr.io/${{ github.repository }}-$PROJECT" | tr '[:upper:]' '[:lower:]')
 
           if [ "$PROJECT" = "gestormatic-frontend" ]; then
-            docker build -t $IMAGE_ID:latest -f docker/gestormatic-frontend/Dockerfile .
+            docker build -t $IMAGE_ID:latest -f apps/gestormatic-frontend/docker/Dockerfile .
             docker push $IMAGE_ID:latest
             curl -X POST "${{ secrets.EASYPANEL_WEBHOOK_FRONTEND }}"
 
           elif [ "$PROJECT" = "process-mgmt-login" ]; then
-            docker build -t $IMAGE_ID:latest -f docker/gestormatic-backend/process-mgmt-login/Dockerfile .
+            docker build -t $IMAGE_ID:latest -f apps/gestormatic-backend/process-mgmt-login/docker/Dockerfile .
             docker push $IMAGE_ID:latest
             curl -X POST "${{ secrets.EASYPANEL_WEBHOOK_BACKEND }}"
 
           elif [ "$PROJECT" = "process-mgmt-procedures" ]; then
-            docker build -t $IMAGE_ID:latest -f docker/gestormatic-backend/process-mgmt-procedures/Dockerfile .
+            docker build -t $IMAGE_ID:latest -f apps/gestormatic-backend/process-mgmt-procedures/docker/Dockerfile .
             docker push $IMAGE_ID:latest
             curl -X POST "${{ secrets.EASYPANEL_WEBHOOK_PROCEDURES }}"
           else
