@@ -57,7 +57,9 @@ jobs:
 
             echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
             echo "has_projects=true" >> $GITHUB_OUTPUT
-            echo "affected=$AFFECTED" >> $GITHUB_OUTPUT
+            echo "affected<<EOF" >> $GITHUB_OUTPUT
+            echo "$AFFECTED" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
           else
             echo "Only global changes → skipping builds"
 
